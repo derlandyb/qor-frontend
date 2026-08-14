@@ -2,13 +2,15 @@ import { useCallback, useEffect, useState } from "react";
 import { fetchEventFeed } from "../../api/eventsApi";
 import type { Event } from "../../types/event";
 import type { UseDebouncedSearchResult } from "../search/useDebouncedSearch";
-import type { UseFiltersResult } from "./useFilters";
+import type { FilterChip, UseFiltersResult } from "./useFilters";
 
 export type FilteredFeedState =
   | { status: "inactive" }
   | { status: "loading" }
   | { status: "results"; events: Event[] }
-  | { status: "no-results" }
+  // Carries the active chips/query so the no-results view can name them (FILTER-006 AC2),
+  // mirroring Mobile's FeedResultsUiState.NoResults(activeFilters, q).
+  | { status: "no-results"; chips: FilterChip[]; q: string }
   | { status: "error"; message: string };
 
 export interface UseFilteredFeedResult {
@@ -58,7 +60,7 @@ export function useFilteredFeed(
         if (cancelled) return;
         setState(
           page.data.length === 0
-            ? { status: "no-results" }
+            ? { status: "no-results", chips: filters.asChips(), q }
             : { status: "results", events: page.data },
         );
       })

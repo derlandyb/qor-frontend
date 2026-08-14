@@ -4,6 +4,7 @@ import type { OptionsState, UseFiltersResult } from "./useFilters";
 
 interface GenreArtistPanelProps {
   filters: UseFiltersResult;
+  id?: string;
 }
 
 function OptionListSection<T>({
@@ -58,9 +59,9 @@ function OptionListSection<T>({
 
 // Inline expandable panel (not a modal/bottom sheet, per filters/context.md's locked decision).
 // Genre is multi-select (OR-combined server-side); artist is single-select, picker-only.
-export function GenreArtistPanel({ filters }: GenreArtistPanelProps) {
+export function GenreArtistPanel({ filters, id }: GenreArtistPanelProps) {
   return (
-    <div className="genre-artist-panel">
+    <div className="genre-artist-panel" id={id}>
       <OptionListSection
         title="Gênero"
         optionsState={filters.genreOptions}

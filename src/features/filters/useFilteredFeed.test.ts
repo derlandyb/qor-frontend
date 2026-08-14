@@ -63,13 +63,34 @@ describe("useFilteredFeed", () => {
     await waitFor(() => expect(result.current.filteredFeed.state.status).toBe("results"));
   });
 
-  it("given a query with zero matches when resolved then state is no-results", async () => {
+  it("given a query with zero matches when resolved then state is no-results and carries the query", async () => {
     const { result } = renderHook(() => useCombined());
 
     act(() => result.current.search.setQuery("zzzz"));
     await waitOutDebounce();
 
     await waitFor(() => expect(result.current.filteredFeed.state.status).toBe("no-results"));
+    const state = result.current.filteredFeed.state;
+    if (state.status !== "no-results") throw new Error("expected no-results state");
+    expect(state.q).toBe("zzzz");
+    expect(state.chips).toEqual([]);
+  });
+
+  it("given zero matches for an active filter selection when resolved then no-results carries the active chips", async () => {
+    vi.mocked(fetch).mockImplementation((url: RequestInfo | URL) => {
+      const u = String(url);
+      if (u.includes("filter-options")) return Promise.resolve(jsonResponse({ data: [] }));
+      return Promise.resolve(jsonResponse({ data: [], next_cursor: null }));
+    });
+
+    const { result } = renderHook(() => useCombined());
+
+    act(() => result.current.filters.selectCity("Vitória"));
+
+    await waitFor(() => expect(result.current.filteredFeed.state.status).toBe("no-results"));
+    const state = result.current.filteredFeed.state;
+    if (state.status !== "no-results") throw new Error("expected no-results state");
+    expect(state.chips).toEqual([{ type: "city", city: "Vitória" }]);
   });
 
   it("given a fetch failure when it rejects then state is error", async () => {

@@ -156,11 +156,7 @@ describe("EventFeedPage", () => {
     await userEvent.type(screen.getByRole("searchbox"), "zzzz");
 
     expect(
-      await screen.findByText(
-        /nenhum evento encontrado para esses filtros/i,
-        {},
-        { timeout: 2000 },
-      ),
+      await screen.findByText(/nenhum evento encontrado para "zzzz"/i, {}, { timeout: 2000 }),
     ).toBeInTheDocument();
   });
 
@@ -182,7 +178,7 @@ describe("EventFeedPage", () => {
     await screen.findByText("Rock Night");
 
     await userEvent.click(screen.getByRole("button", { name: "Vitória" }));
-    await screen.findByText(/nenhum evento encontrado para esses filtros/i, {}, { timeout: 2000 });
+    await screen.findByText(/nenhum evento encontrado para Vitória/i, {}, { timeout: 2000 });
 
     const clearButtons = screen.getAllByRole("button", { name: /limpar filtros/i });
     await userEvent.click(clearButtons[0]);

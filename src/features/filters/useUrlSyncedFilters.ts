@@ -46,10 +46,11 @@ export function useUrlSyncedFilters(): {
   const filters = useFilters(initialFilterState);
 
   useEffect(() => {
-    // Skip the very first run so a fresh, param-less visit doesn't immediately rewrite the URL.
+    // Skip the very first run unconditionally — otherwise a bookmarked/shared filtered URL
+    // triggers a redundant setSearchParams rewriting the URL to the same string it already had.
     if (!initialized.current) {
       initialized.current = true;
-      if (searchParams.toString() === "") return;
+      return;
     }
 
     const next = new URLSearchParams();

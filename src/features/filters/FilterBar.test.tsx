@@ -46,6 +46,18 @@ describe("FilterBar", () => {
     expect(await screen.findByText(/gênero/i)).toBeInTheDocument();
   });
 
+  it("given the Filtros toggle when rendered then aria-controls references the expandable panel's id", async () => {
+    render(<Harness />);
+
+    const toggle = screen.getByRole("button", { name: /filtros/i });
+    const controlsId = toggle.getAttribute("aria-controls");
+    expect(controlsId).toBeTruthy();
+
+    await userEvent.click(toggle);
+
+    expect(document.getElementById(controlsId!)).not.toBeNull();
+  });
+
   it("given a date chip is already selected when clicked again then it deselects (single-select replace)", async () => {
     render(<Harness />);
 

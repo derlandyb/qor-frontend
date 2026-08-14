@@ -102,7 +102,7 @@ test("given a visitor when search has no matches then an explicit no-results mes
   await page.goto("/");
   await page.getByRole("searchbox", { name: /buscar eventos/i }).fill("zzzz");
 
-  await expect(page.getByText(/nenhum evento encontrado para esses filtros/i)).toBeVisible();
+  await expect(page.getByText(/nenhum evento encontrado para "zzzz"/i)).toBeVisible();
 });
 
 test("given a visitor when clearing filters then the unfiltered chronological feed returns", async ({
@@ -130,7 +130,7 @@ test("given a visitor when clearing filters then the unfiltered chronological fe
   await expect(page.getByText(mockEvent().title)).toBeVisible();
 
   await page.getByRole("button", { name: "Vitória" }).click();
-  await expect(page.getByText(/nenhum evento encontrado para esses filtros/i)).toBeVisible();
+  await expect(page.getByText(/nenhum evento encontrado para Vitória/i)).toBeVisible();
 
   await page
     .getByRole("button", { name: /limpar filtros/i })

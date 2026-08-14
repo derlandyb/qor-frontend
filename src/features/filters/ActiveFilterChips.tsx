@@ -1,23 +1,10 @@
-import { DATE_BUCKETS } from "./dateBuckets";
+import { chipLabel } from "./filterChipLabel";
 import type { FilterChip } from "./useFilters";
 
 interface ActiveFilterChipsProps {
   chips: FilterChip[];
   onRemove: (chip: FilterChip) => void;
   onClearAll: () => void;
-}
-
-function chipLabel(chip: FilterChip): string {
-  switch (chip.type) {
-    case "date":
-      return DATE_BUCKETS.find((bucket) => bucket.value === chip.bucket)?.label ?? chip.bucket;
-    case "city":
-      return chip.city;
-    case "genre":
-      return `Gêneros (${chip.genres.size})`;
-    case "artist":
-      return chip.artist.name;
-  }
 }
 
 // One chip per filter *type* (genres collapse to a single chip), each individually removable,

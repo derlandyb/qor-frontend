@@ -1,5 +1,6 @@
 import { ActiveFilterChips } from "../filters/ActiveFilterChips";
 import { FilterBar } from "../filters/FilterBar";
+import { formatActiveFiltersSummary } from "../filters/filterChipLabel";
 import { useFilteredFeed } from "../filters/useFilteredFeed";
 import { useUrlSyncedFilters } from "../filters/useUrlSyncedFilters";
 import { SearchBar } from "../search/SearchBar";
@@ -55,7 +56,10 @@ export function EventFeedPage() {
 
         {filteredFeedState.status === "no-results" && (
           <div className="feed-state" role="status">
-            <p className="body-lg">Nenhum evento encontrado para esses filtros.</p>
+            <p className="body-lg">
+              Nenhum evento encontrado para{" "}
+              {formatActiveFiltersSummary(filteredFeedState.chips, filteredFeedState.q)}.
+            </p>
             <button type="button" className="feed-state__retry" onClick={handleClearAll}>
               Limpar filtros
             </button>

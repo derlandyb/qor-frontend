@@ -7,6 +7,8 @@ interface FilterBarProps {
   filters: UseFiltersResult;
 }
 
+const GENRE_ARTIST_PANEL_ID = "genre-artist-panel";
+
 // Always-visible date/city preset chips + a "Filtros" toggle expanding the genre/artist panel
 // inline (not a modal/bottom sheet) — per filters/context.md's locked entry-point decision.
 export function FilterBar({ filters }: FilterBarProps) {
@@ -47,13 +49,14 @@ export function FilterBar({ filters }: FilterBarProps) {
           type="button"
           className="filter-pill filter-bar__toggle"
           aria-expanded={panelOpen}
+          aria-controls={GENRE_ARTIST_PANEL_ID}
           onClick={() => setPanelOpen((open) => !open)}
         >
           Filtros
         </button>
       </div>
 
-      {panelOpen && <GenreArtistPanel filters={filters} />}
+      {panelOpen && <GenreArtistPanel filters={filters} id={GENRE_ARTIST_PANEL_ID} />}
     </div>
   );
 }
