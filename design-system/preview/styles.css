@@ -1,0 +1,599 @@
+/* Vix Rock Discovery — static approval sample styles.
+   Consumes design tokens from ../tokens.css exclusively (no hardcoded
+   colors/spacing/radii here) so this sample doubles as a token-fidelity
+   check. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background: var(--color-background);
+  color: var(--color-on-background);
+  /* leave room for the fixed mobile bottom nav */
+  padding-bottom: var(--layout-nav-height-mobile);
+}
+
+@media (min-width: 900px) {
+  body {
+    padding-bottom: 0;
+    /* leave room for the fixed desktop top nav */
+    padding-top: var(--layout-nav-height-desktop);
+  }
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 20;
+  font-size: 20px;
+  line-height: 1;
+  user-select: none;
+}
+
+/* ---- Skip link -------------------------------------------------------- */
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: var(--space-stack-sm) var(--space-stack-md);
+  border-radius: 0 0 var(--radius-md) 0;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* ---- Typography helpers ------------------------------------------------ */
+
+.headline-lg {
+  font-size: var(--font-headline-lg-mobile-size);
+  font-weight: var(--font-headline-lg-mobile-weight);
+  line-height: var(--font-headline-lg-mobile-line);
+  margin: 0 0 var(--space-stack-sm);
+}
+
+@media (min-width: 900px) {
+  .headline-lg {
+    font-size: var(--font-headline-lg-size);
+    font-weight: var(--font-headline-lg-weight);
+    line-height: var(--font-headline-lg-line);
+    letter-spacing: var(--font-headline-lg-tracking);
+  }
+}
+
+.headline-md {
+  font-size: var(--font-headline-md-size);
+  font-weight: var(--font-headline-md-weight);
+  line-height: var(--font-headline-md-line);
+  margin: var(--space-stack-lg) 0 var(--space-stack-sm);
+}
+
+.body-lg {
+  font-size: var(--font-body-lg-size);
+  font-weight: var(--font-body-lg-weight);
+  line-height: var(--font-body-lg-line);
+  margin: 0;
+}
+
+.label-md {
+  font-size: var(--font-label-md-size);
+  font-weight: var(--font-label-md-weight);
+  line-height: var(--font-label-md-line);
+  letter-spacing: var(--font-label-md-tracking);
+  text-transform: uppercase;
+}
+
+.caption {
+  font-size: var(--font-caption-size);
+  font-weight: var(--font-caption-weight);
+  line-height: var(--font-caption-line);
+  margin: 0;
+}
+
+/* ---- Layout shell ------------------------------------------------------ */
+
+main {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-margin-mobile);
+}
+
+@media (min-width: 900px) {
+  main {
+    padding: var(--space-stack-lg) var(--space-margin-desktop);
+  }
+}
+
+/* ==== Navigation ========================================================
+   Mobile-first: fixed bottom nav shown by default. At the desktop
+   breakpoint the bottom nav is hidden and a fixed top nav bar takes over.
+   Purely CSS-driven — no JS breakpoint logic. */
+
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  background: var(--color-surface-container-lowest);
+  border-top: 1px solid var(--color-outline-variant);
+  box-shadow: var(--elevation-level2);
+  padding: var(--space-stack-sm) 0;
+}
+
+.bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--color-on-surface-variant);
+  padding: var(--space-base-grid) 0;
+}
+
+.bottom-nav__item .material-symbols-outlined {
+  color: var(--color-on-surface-variant);
+}
+
+.bottom-nav__item--active {
+  color: var(--color-primary);
+}
+
+.bottom-nav__item--active .material-symbols-outlined {
+  color: var(--color-primary);
+}
+
+.bottom-nav__icon-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.bottom-nav__dot {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--size-badge-dot);
+  height: var(--size-badge-dot);
+  border-radius: var(--radius-full);
+  background: var(--color-accent-container);
+}
+
+.top-nav {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .bottom-nav {
+    display: none;
+  }
+
+  .top-nav {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: var(--color-surface-container-lowest);
+    border-bottom: 1px solid var(--color-outline-variant);
+    box-shadow: var(--elevation-level2);
+  }
+
+  .top-nav__inner {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: var(--space-stack-sm) var(--space-margin-desktop);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .top-nav__brand {
+    font-size: var(--font-headline-md-size);
+    font-weight: var(--font-headline-md-weight);
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .top-nav__links {
+    display: flex;
+    gap: var(--space-stack-lg);
+  }
+
+  .top-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-base-grid);
+    text-decoration: none;
+    color: var(--color-on-surface-variant);
+    font-size: var(--font-body-md-size);
+    font-weight: 500;
+    padding: var(--space-base-grid) 0;
+    border-bottom: 2px solid transparent;
+  }
+
+  .top-nav__link .material-symbols-outlined {
+    color: var(--color-on-surface-variant);
+  }
+
+  .top-nav__link--active,
+  .top-nav__link:hover,
+  .top-nav__link:focus-visible {
+    color: var(--color-primary);
+  }
+
+  .top-nav__link--active .material-symbols-outlined,
+  .top-nav__link:hover .material-symbols-outlined,
+  .top-nav__link:focus-visible .material-symbols-outlined {
+    color: var(--color-primary);
+  }
+
+  .top-nav__link--active {
+    border-bottom-color: var(--color-accent-container);
+  }
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ==== Component gallery ================================================= */
+
+.component-gallery {
+  margin-bottom: var(--space-stack-lg);
+}
+
+.gallery-intro {
+  color: var(--color-on-surface-variant);
+  max-width: none;
+}
+
+.button-row,
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-stack-sm);
+}
+
+.btn {
+  border: none;
+  border-radius: var(--radius-xl);
+  padding: var(--space-btn-y) var(--space-btn-x);
+  font-size: var(--font-body-md-size);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Colors below follow the Stitch style guide's literal component spec
+ * ("Primary: Deep Teal background, White text" / "Secondary: Pale Aqua
+ * background, Deep Teal text" / "Accent: Sunset Orange background, Charcoal
+ * text") rather than a strict on-container token pairing — intentional,
+ * not a naming oversight. See design-system/README.md's accent-color note:
+ * the accent-container hex is a muted brown, not a bright orange, so
+ * "Charcoal text" here is closer to borderline-AA than the other two
+ * pairings; revisit if the accent hex itself gets brightened. */
+.btn--primary {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary);
+}
+
+.btn--secondary {
+  background: var(--color-secondary-container);
+  color: var(--color-primary);
+}
+
+.btn--accent {
+  background: var(--color-accent-container);
+  color: var(--color-on-background);
+}
+
+.chip {
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+  padding: var(--space-chip-y) var(--space-chip-x);
+  font-size: var(--font-body-md-size);
+  cursor: pointer;
+}
+
+.chip--selected {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-stack-sm);
+  background: var(--color-secondary-container);
+  border-radius: var(--radius-full);
+  padding: 12px 20px;
+  max-width: 480px;
+}
+
+/* Mobile keeps the pill compact; desktop lets it span the gallery's full
+ * measure like the rest of the component gallery does. */
+@media (min-width: 900px) {
+  .search-bar {
+    max-width: none;
+  }
+}
+
+.search-bar__icon {
+  color: var(--color-primary);
+}
+
+.search-bar__input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: var(--font-body-md-size);
+  font-family: inherit;
+  color: var(--color-on-background);
+  width: 100%;
+}
+
+.search-bar__input::placeholder {
+  color: var(--color-on-surface-variant);
+}
+
+/* ==== Feed / date groups / cards ========================================= */
+
+.feed__heading {
+  margin-top: 0;
+}
+
+.date-group {
+  margin-bottom: var(--space-stack-lg);
+}
+
+.date-section-header {
+  font-size: var(--font-headline-md-size);
+  font-weight: var(--font-headline-md-weight);
+  line-height: var(--font-headline-md-line);
+  margin: 0 0 var(--space-stack-sm);
+}
+
+.card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-md);
+}
+
+/* Desktop preview deliberately breaks from FEED-009's spec'd single-column
+ * rule (3-up grid, per design-review request) — flagged here since the
+ * real event-feed implementation must decide single-column vs. this grid
+ * as its own conscious call, not inherit it silently from this sample. */
+@media (min-width: 900px) {
+  .card-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* stretch (not start): every card in a row matches the row's tallest
+     * card, so a card missing the age-rating badge doesn't end up shorter
+     * than its row-mates. */
+    align-items: stretch;
+    max-width: var(--content-max-width);
+  }
+}
+
+.event-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-container-lowest);
+  box-shadow: var(--elevation-level1);
+}
+
+/* The card's tap target is this link (title + image + meta), not the
+ * <article> itself — keeps the favorite/share buttons as siblings instead
+ * of nesting interactive controls inside an <a>. Also the layout column
+ * that stretches to fill the card, so .event-card__body (below) can grow
+ * to push its footer to a shared bottom edge. */
+.event-card__link {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  color: inherit;
+  text-decoration: none;
+  border-radius: inherit;
+  overflow: hidden;
+  transition: transform 0.15s ease;
+}
+
+.event-card__link:active {
+  transform: scale(0.98);
+}
+
+.event-card__media {
+  position: relative;
+  flex: none;
+  aspect-ratio: 16 / 9;
+  background: var(--color-surface-container-high);
+}
+
+.event-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Fixed framing bias (not "center center") so every card's subject sits
+   * at a consistent point in the frame regardless of the source photo's
+   * own composition — this is what "uniform" actually depends on, since
+   * the container itself is already a fixed 16:9 box at every card. */
+  object-position: center 40%;
+}
+
+/* Neutral placeholder when no cover image exists — never a broken-image icon (FEED-004). */
+.event-card__media--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-secondary-container);
+}
+
+.event-card__placeholder-icon {
+  font-size: var(--size-icon-placeholder);
+  color: var(--color-primary);
+  opacity: 0.6;
+}
+
+.event-card__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--scrim-gradient);
+  pointer-events: none;
+}
+
+/* Overlay text sits on unpredictable photo content, so every overlay chip
+ * (date, live badge, price) gets a solid dark backing — never bare text
+ * over the gradient scrim alone — to keep contrast independent of the
+ * underlying image. */
+.event-card__live-badge {
+  position: absolute;
+  top: var(--space-stack-sm);
+  left: var(--space-stack-sm);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border-radius: var(--radius-full);
+  padding: 4px 10px;
+  z-index: 1;
+}
+
+.event-card__overlay {
+  position: absolute;
+  left: var(--space-stack-sm);
+  right: var(--space-stack-sm);
+  bottom: var(--space-stack-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  z-index: 1;
+}
+
+.event-card__date {
+  color: #ffffff;
+  background: rgba(23, 27, 43, 0.55);
+  border-radius: var(--radius-full);
+  padding: 2px 10px;
+}
+
+.event-card__price {
+  color: #ffffff;
+  background: rgba(23, 27, 43, 0.55);
+  border-radius: var(--radius-full);
+  padding: 2px 10px;
+}
+
+.event-card__price--free {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+/* Positioned against .event-card (not .event-card__link), so these sit as
+ * siblings of the card's link rather than nested inside it — buttons
+ * inside an <a> would be invalid, unreachable-by-AT nesting. */
+.event-card__affordances {
+  position: absolute;
+  top: var(--space-stack-sm);
+  right: var(--space-stack-sm);
+  display: flex;
+  gap: var(--space-base-grid);
+  z-index: 2;
+}
+
+.icon-affordance {
+  width: var(--size-icon-affordance);
+  height: var(--size-icon-affordance);
+  border-radius: var(--radius-full);
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--color-on-background);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.icon-affordance--favorite[aria-pressed="true"] {
+  color: var(--color-error);
+}
+
+.icon-affordance--favorite[aria-pressed="true"] .material-symbols-outlined {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 20;
+}
+
+.event-card__body {
+  flex: 1;
+  padding: var(--space-stack-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.event-card__title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.event-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-on-surface-variant);
+}
+
+.event-card__meta-icon {
+  font-size: 16px;
+}
+
+/* Always rendered (even with nothing inside, when the event has no
+ * age rating) so every card's meta line sits the same distance from the
+ * card's bottom edge — the badge itself never has to be present for the
+ * card's footer position to be uniform within a row. */
+.event-card__footer {
+  margin-top: auto;
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+  padding-top: 2px;
+}
+
+.age-rating-badge {
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-sm);
+  padding: 1px 6px;
+  color: var(--color-on-surface-variant);
+}
