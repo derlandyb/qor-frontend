@@ -12,9 +12,11 @@ export interface UseDebouncedSearchResult {
 // Debounce + minimum-length guard only — no fetch. useFilteredFeed is the sole fetcher that
 // consumes debouncedQuery, so search and filters never race against the same endpoint
 // (search/design.md's fetch-ownership amendment, 2026-08-11).
-export function useDebouncedSearch(): UseDebouncedSearchResult {
-  const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState<string | null>(null);
+export function useDebouncedSearch(initialQuery = ""): UseDebouncedSearchResult {
+  const [query, setQuery] = useState(initialQuery);
+  const [debouncedQuery, setDebouncedQuery] = useState<string | null>(
+    initialQuery.trim().length >= MIN_QUERY_LENGTH ? initialQuery.trim() : null,
+  );
 
   useEffect(() => {
     const trimmed = query.trim();
