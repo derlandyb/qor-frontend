@@ -1,0 +1,258 @@
+/* Global shell — reset, typography helpers, and the mobile-bottom-nav /
+ * desktop-top-nav swap. Ported from the approved design-system preview
+ * (design-system/preview/styles.css) rather than re-derived; consumes
+ * ../../../design-system/tokens.css exclusively for color/space/type/radius. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background: var(--color-background);
+  color: var(--color-on-background);
+  padding-bottom: var(--layout-nav-height-mobile);
+}
+
+@media (min-width: 900px) {
+  body {
+    padding-bottom: 0;
+    padding-top: var(--layout-nav-height-desktop);
+  }
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: var(--space-stack-sm) var(--space-stack-md);
+  border-radius: 0 0 var(--radius-md) 0;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+main {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-margin-mobile);
+}
+
+@media (min-width: 900px) {
+  main {
+    padding: var(--space-stack-lg) var(--space-margin-desktop);
+  }
+}
+
+/* ---- Typography helpers ------------------------------------------------ */
+
+.headline-lg {
+  font-size: var(--font-headline-lg-mobile-size);
+  font-weight: var(--font-headline-lg-mobile-weight);
+  line-height: var(--font-headline-lg-mobile-line);
+  margin: 0 0 var(--space-stack-sm);
+}
+
+@media (min-width: 900px) {
+  .headline-lg {
+    font-size: var(--font-headline-lg-size);
+    font-weight: var(--font-headline-lg-weight);
+    line-height: var(--font-headline-lg-line);
+    letter-spacing: var(--font-headline-lg-tracking);
+  }
+}
+
+.headline-md {
+  font-size: var(--font-headline-md-size);
+  font-weight: var(--font-headline-md-weight);
+  line-height: var(--font-headline-md-line);
+  margin: var(--space-stack-lg) 0 var(--space-stack-sm);
+}
+
+.body-lg {
+  font-size: var(--font-body-lg-size);
+  font-weight: var(--font-body-lg-weight);
+  line-height: var(--font-body-lg-line);
+  margin: 0;
+}
+
+.label-md {
+  font-size: var(--font-label-md-size);
+  font-weight: var(--font-label-md-weight);
+  line-height: var(--font-label-md-line);
+  letter-spacing: var(--font-label-md-tracking);
+  text-transform: uppercase;
+}
+
+.caption {
+  font-size: var(--font-caption-size);
+  font-weight: var(--font-caption-weight);
+  line-height: var(--font-caption-line);
+  margin: 0;
+}
+
+/* ==== Navigation ========================================================
+   Mobile-first: fixed bottom nav shown by default. At the desktop
+   breakpoint the bottom nav is hidden and a fixed top nav bar takes over. */
+
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  background: var(--color-surface-container-lowest);
+  border-top: 1px solid var(--color-outline-variant);
+  box-shadow: var(--elevation-level2);
+  padding: var(--space-stack-sm) 0;
+}
+
+.bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--color-on-surface-variant);
+  padding: var(--space-base-grid) 0;
+}
+
+.bottom-nav__item .icon {
+  color: var(--color-on-surface-variant);
+}
+
+.bottom-nav__item--active {
+  color: var(--color-primary);
+}
+
+.bottom-nav__item--active .icon {
+  color: var(--color-primary);
+}
+
+.bottom-nav__icon-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.bottom-nav__dot {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--size-badge-dot);
+  height: var(--size-badge-dot);
+  border-radius: var(--radius-full);
+  background: var(--color-accent-container);
+}
+
+.top-nav {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .bottom-nav {
+    display: none;
+  }
+
+  .top-nav {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: var(--color-surface-container-lowest);
+    border-bottom: 1px solid var(--color-outline-variant);
+    box-shadow: var(--elevation-level2);
+  }
+
+  .top-nav__inner {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: var(--space-stack-sm) var(--space-margin-desktop);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .top-nav__brand {
+    font-size: var(--font-headline-md-size);
+    font-weight: var(--font-headline-md-weight);
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .top-nav__links {
+    display: flex;
+    gap: var(--space-stack-lg);
+  }
+
+  .top-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-base-grid);
+    text-decoration: none;
+    color: var(--color-on-surface-variant);
+    font-size: var(--font-body-md-size);
+    font-weight: 500;
+    padding: var(--space-base-grid) 0;
+    border-bottom: 2px solid transparent;
+  }
+
+  .top-nav__link .icon {
+    color: var(--color-on-surface-variant);
+  }
+
+  .top-nav__link--active,
+  .top-nav__link:hover,
+  .top-nav__link:focus-visible {
+    color: var(--color-primary);
+  }
+
+  .top-nav__link--active .icon,
+  .top-nav__link:hover .icon,
+  .top-nav__link:focus-visible .icon {
+    color: var(--color-primary);
+  }
+
+  .top-nav__link--active {
+    border-bottom-color: var(--color-accent-container);
+  }
+}
