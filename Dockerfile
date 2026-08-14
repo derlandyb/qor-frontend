@@ -1,9 +1,13 @@
-FROM nginx:1.27-alpine
+FROM node:22.22.2-bookworm
 
-# Static-preview stage only — no Vite app yet. This Dockerfile is expected
-# to be replaced by the real Vite dev-server image once the React app
-# scaffold lands (see .specs/features/event-feed/design.md's Web slice).
-COPY design-system /usr/share/nginx/html/design-system
-COPY nginx-redirect.html /usr/share/nginx/html/index.html
+RUN corepack enable && corepack prepare pnpm@10.13.1 --activate
 
-EXPOSE 80
+WORKDIR /app
+COPY package.json pnpm-lock.yaml* ./
+RUN pnpm install --frozen-lockfile || pnpm install
+RUN pnpm exec playwright install --with-deps chromium
+
+COPY . .
+
+EXPOSE 5173
+CMD ["pnpm", "dev", "--host"]
