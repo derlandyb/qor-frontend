@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { fetchEventFeed } from "../../api/eventsApi";
 import type { Event } from "../../types/event";
 import type { UseDebouncedSearchResult } from "../search/useDebouncedSearch";
@@ -13,6 +13,7 @@ export type FilteredFeedState =
 
 export interface UseFilteredFeedResult {
   state: FilteredFeedState;
+  retry: () => void;
 }
 
 // The sole fetcher combining search's debounced query with filters' selection state into one
@@ -24,6 +25,8 @@ export function useFilteredFeed(
   filters: UseFiltersResult,
 ): UseFilteredFeedResult {
   const [state, setState] = useState<FilteredFeedState>({ status: "inactive" });
+  const [retryNonce, setRetryNonce] = useState(0);
+  const retry = useCallback(() => setRetryNonce((n) => n + 1), []);
 
   const q = search.debouncedQuery ?? "";
   const { dateBucket, city, artist } = filters.state;
@@ -71,7 +74,7 @@ export function useFilteredFeed(
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [q, dateBucket, city, genresKey, artist?.id]);
+  }, [q, dateBucket, city, genresKey, artist?.id, retryNonce]);
 
-  return { state };
+  return { state, retry };
 }
