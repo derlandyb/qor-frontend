@@ -38,7 +38,7 @@ export function useEventFeed(): UseEventFeedResult {
     setError(null);
 
     try {
-      const page = await fetchEventFeed(cursorRef.current);
+      const page = await fetchEventFeed({ cursor: cursorRef.current });
       setEvents((current) => (isInitial ? page.data : [...current, ...page.data]));
       cursorRef.current = page.nextCursor ?? undefined;
       setEndReached(page.nextCursor === null);
