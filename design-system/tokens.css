@@ -1,0 +1,148 @@
+/**
+ * Vix Rock Discovery — design tokens
+ * Source: Stitch design system `assets/ede423fa8f7f44a997a02a742803fa28`
+ * (project "Qual o Rock? Local Discovery", `projects/6008587636717635180`)
+ *
+ * Portable CSS custom properties — safe to import verbatim into the future
+ * Vite/React app (`.specs/features/event-feed/design.md`'s Web slice).
+ */
+
+:root {
+  /* ---- Color: surfaces & text -------------------------------------- */
+  --color-background: #faf8ff;
+  --color-on-background: #171b2b;
+  --color-surface: #faf8ff;
+  --color-surface-dim: #d6d9ef;
+  --color-surface-bright: #faf8ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f2ff;
+  --color-surface-container: #ebedff;
+  --color-surface-container-high: #e4e7fe;
+  --color-surface-container-highest: #dee1f8;
+  --color-on-surface: #171b2b;
+  --color-on-surface-variant: #3e494a;
+  --color-outline: #6f797a;
+  --color-outline-variant: #bec8ca;
+
+  /* ---- Color: brand --------------------------------------------------
+   * "Primary (Deep Teal)" per the style guide's prose.
+   */
+  --color-primary: #00535b;
+  --color-primary-container: #006d77;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #9becf7;
+
+  --color-secondary: #576063;
+  --color-secondary-container: #d8e1e4;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #5b6467;
+
+  /*
+   * "Accent (Sunset Orange)" per the style guide's prose (used for
+   * highlights, Live badges, and "Comprar Ingresso" CTAs). The design
+   * system's own literal token values trend brown/amber (#713d10 /
+   * #8e5426) rather than a bright orange — kept as-is here since it's
+   * the asset's authoritative hex, but flagged in design-system/README.md
+   * as an open discrepancy against the "Sunset Orange" naming; do not
+   * silently brighten it without a design decision.
+   */
+  --color-accent: #713d10;
+  --color-accent-container: #8e5426;
+  --color-on-accent: #ffffff;
+  --color-on-accent-container: #ffd7bd;
+
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+
+  /* ---- Shape: corner radius ------------------------------------------ */
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius-md: 0.5rem;    /* 8px  (DEFAULT) */
+  --radius-md-lg: 0.75rem;/* 12px — between md and lg, not a modifier of lg */
+  --radius-lg: 1rem;      /* 16px — event cards */
+  --radius-xl: 1.5rem;    /* 24px — buttons / search bars */
+  --radius-full: 9999px;  /* pill — chips, bottom-nav dot */
+
+  /* ---- Spacing: 4px base grid ---------------------------------------- */
+  --space-base-grid: 4px;
+  --space-gutter: 16px;
+  --space-margin-mobile: 16px;
+  --space-margin-desktop: 32px;
+  --space-stack-sm: 8px;
+  --space-stack-md: 16px;
+  --space-stack-lg: 24px;
+
+  /* ---- Typography ------------------------------------------------------
+   * Geist across every scale, per the style guide.
+   */
+  --font-family: "Geist", system-ui, -apple-system, sans-serif;
+
+  --font-display-lg-size: 40px;
+  --font-display-lg-weight: 800;
+  --font-display-lg-line: 48px;
+  --font-display-lg-tracking: -0.02em;
+
+  --font-headline-lg-size: 32px;
+  --font-headline-lg-weight: 700;
+  --font-headline-lg-line: 40px;
+  --font-headline-lg-tracking: -0.01em;
+
+  --font-headline-lg-mobile-size: 24px;
+  --font-headline-lg-mobile-weight: 700;
+  --font-headline-lg-mobile-line: 32px;
+
+  --font-headline-md-size: 20px;
+  --font-headline-md-weight: 700;
+  --font-headline-md-line: 28px;
+
+  --font-body-lg-size: 18px;
+  --font-body-lg-weight: 400;
+  --font-body-lg-line: 28px;
+
+  --font-body-md-size: 16px;
+  --font-body-md-weight: 400;
+  --font-body-md-line: 24px;
+
+  --font-label-md-size: 14px;
+  --font-label-md-weight: 600;
+  --font-label-md-line: 20px;
+  --font-label-md-tracking: 0.05em;
+
+  --font-caption-size: 12px;
+  --font-caption-weight: 500;
+  --font-caption-line: 16px;
+
+  /* ---- Elevation ------------------------------------------------------ */
+  --elevation-level1: 0 4px 12px rgba(23, 27, 43, 0.05); /* cards */
+  --elevation-level2: 0 8px 20px rgba(23, 27, 43, 0.10); /* nav / sheets */
+  --scrim-gradient: linear-gradient(
+    to top,
+    rgba(23, 27, 43, 0.6) 0%,
+    rgba(23, 27, 43, 0) 60%
+  );
+
+  /* ---- Layout breakpoint ------------------------------------------------
+   * Below this width: mobile layout, fixed bottom nav.
+   * At/above this width: desktop layout, top nav bar, no bottom nav.
+   */
+  --breakpoint-desktop: 900px;
+  --content-max-width: 1280px;
+  --content-feed-max-width: 720px; /* single-column card list reading width on wide viewports */
+
+  /* ---- Fixed nav sizing (drives body scroll-padding so content never
+   * sits under the fixed bottom/top nav) ---------------------------------- */
+  --layout-nav-height-mobile: 88px;
+  --layout-nav-height-desktop: 72px;
+
+  /* ---- Component sizing not covered by the spacing/radius scales -------- */
+  --size-icon-affordance: 36px;   /* favorite/share circular buttons on cards */
+  --size-icon-placeholder: 40px;  /* no-cover-image placeholder icon */
+  --size-badge-dot: 6px;          /* bottom-nav active-state accent dot */
+
+  /* Button/chip padding — both multiples of --space-base-grid (4px). */
+  --space-btn-y: 12px;
+  --space-btn-x: 24px;
+  --space-chip-y: 8px;
+  --space-chip-x: 16px;
+}
