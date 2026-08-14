@@ -56,7 +56,10 @@ test("given a visitor when typing a query then matching event cards replace the 
       return route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ data: [mockEvent({ id: "2", title: "Forró na Praça" })], next_cursor: null }),
+        body: JSON.stringify({
+          data: [mockEvent({ id: "2", title: "Forró na Praça" })],
+          next_cursor: null,
+        }),
       });
     }
     return route.fulfill({
@@ -129,7 +132,10 @@ test("given a visitor when clearing filters then the unfiltered chronological fe
   await page.getByRole("button", { name: "Vitória" }).click();
   await expect(page.getByText(/nenhum evento encontrado para esses filtros/i)).toBeVisible();
 
-  await page.getByRole("button", { name: /limpar filtros/i }).first().click();
+  await page
+    .getByRole("button", { name: /limpar filtros/i })
+    .first()
+    .click();
 
   await expect(page.getByText(mockEvent().title)).toBeVisible();
 });
@@ -146,7 +152,10 @@ test("given a visitor when filters are combined then the URL-restored feed match
     return route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ data: [mockEvent({ id: "3", title: "Restaurado da URL" })], next_cursor: null }),
+      body: JSON.stringify({
+        data: [mockEvent({ id: "3", title: "Restaurado da URL" })],
+        next_cursor: null,
+      }),
     });
   });
 
