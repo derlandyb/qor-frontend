@@ -1,0 +1,181 @@
+/* Event detail page — consumes design-system/tokens.css. Layout: status banner (conditional) ->
+ * hero -> primary Save/Share actions (secondary ticket link) -> description -> location ->
+ * promoter, per event-details/design.md's Web section and its corrected Stitch action-hierarchy. */
+
+.detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-lg);
+  max-width: var(--content-feed-max-width);
+}
+
+/* ---- Status banner ---- */
+
+.status-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-stack-sm);
+  border-radius: var(--radius-md);
+  padding: var(--space-stack-sm) var(--space-stack-md);
+}
+
+.status-banner--cancelled {
+  background: var(--color-error);
+  color: var(--color-on-error);
+}
+
+.status-banner--finished {
+  background: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+}
+
+/* ---- Hero ---- */
+
+.detail-page__hero-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  background: var(--color-surface-container-high);
+}
+
+.detail-page__hero-image--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+}
+
+.detail-page__hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: var(--space-stack-sm);
+}
+
+.detail-page__date-price {
+  color: var(--color-on-surface-variant);
+}
+
+/* ---- Action row: Save/Share are the two primary, equal-weight controls; the ticket link is
+ * a small secondary text link that follows them in DOM order (DETAIL-002/005). ---- */
+
+.action-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+}
+
+.action-row__primary {
+  display: flex;
+  gap: var(--space-stack-sm);
+}
+
+.action-row__button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: var(--radius-xl);
+  padding: var(--space-btn-y) var(--space-btn-x);
+  background: var(--color-primary-container);
+  color: var(--color-on-primary);
+  cursor: pointer;
+}
+
+.action-row__button[aria-pressed="true"] {
+  background: var(--color-primary);
+}
+
+.action-row__ticket-link {
+  align-self: flex-start;
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* ---- Description ---- */
+
+.description-section p {
+  white-space: pre-wrap;
+}
+
+/* ---- Location ---- */
+
+.location-section__map {
+  width: 100%;
+  height: 160px;
+  border-radius: var(--radius-md-lg);
+  object-fit: cover;
+  background: var(--color-surface-container-high);
+}
+
+.location-section__maps-link,
+.location-section__contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-primary);
+}
+
+.location-section__contact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: var(--space-stack-sm);
+}
+
+.location-section__contact-link .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---- Promoter ---- */
+
+.promoter-section__card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-stack-sm);
+}
+
+.promoter-section__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-container-high);
+}
+
+.promoter-section__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.promoter-section__avatar-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-on-surface-variant);
+}
+
+.promoter-section__name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+}
+
+.promoter-section__verified {
+  width: 18px;
+  height: 18px;
+  color: var(--color-primary);
+}
+
+.promoter-section__social-link {
+  color: var(--color-primary);
+  text-transform: capitalize;
+}

@@ -20,6 +20,14 @@ const PATHS = {
     '<circle cx="7" cy="18" r="2.6" stroke="currentColor" stroke-width="1.75" fill="none"/><path d="M9.6 18V5.4L18 4v11.4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="15.4" cy="15.4" r="2.6" stroke="currentColor" stroke-width="1.75" fill="none"/>',
   share:
     '<circle cx="18" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.75" fill="none"/><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.75" fill="none"/><circle cx="18" cy="18.5" r="2.5" stroke="currentColor" stroke-width="1.75" fill="none"/><path d="m8.2 10.8 7.6-4.2M8.2 13.2l7.6 4.2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>',
+  cancel:
+    '<circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.75" fill="none"/><path d="m9 9 6 6M15 9l-6 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>',
+  event_busy:
+    '<rect x="4" y="5.5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.75" fill="none"/><path d="M4 10h16M8 3.5v3M16 3.5v3" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="m9.5 13.5 5 5M14.5 13.5l-5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>',
+  call: '<path d="M6 4h3l1.5 4.5L8 10a10 10 0 0 0 6 6l1.5-2.5L20 15v3a2 2 0 0 1-2 2C11.4 20 4 12.6 4 6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" fill="none"/>',
+  mail: '<rect x="3.5" y="5.5" width="17" height="13" rx="2" stroke="currentColor" stroke-width="1.75" fill="none"/><path d="m4.5 7 7.5 6 7.5-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  verified:
+    '<path d="m9 12 2 2 4.5-4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M12 3.5c1 1.3 2.6 1.9 4.2 1.6.9 1.4 2.4 2.2 4 2.2-.3 1.6.2 3.2 1.4 4.3-1.2 1.1-1.7 2.7-1.4 4.3-1.6 0-3.1.8-4 2.2-1.6-.3-3.2.3-4.2 1.6-1-1.3-2.6-1.9-4.2-1.6-.9-1.4-2.4-2.2-4-2.2.3-1.6-.2-3.2-1.4-4.3 1.2-1.1 1.7-2.7 1.4-4.3 1.6 0 3.1-.8 4-2.2 1.6.3 3.2-.3 4.2-1.6Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/>',
 } as const;
 
 interface IconProps {
