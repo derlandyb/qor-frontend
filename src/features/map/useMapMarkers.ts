@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { fetchMapMarkers } from "../../api/mapApi";
 import type { Event } from "../../types/event";
 import type { FilterState } from "../../types/filters";
@@ -11,6 +11,7 @@ export type MapMarkersState =
 
 export interface UseMapMarkersResult {
   state: MapMarkersState;
+  retry: () => void;
 }
 
 // The web equivalent of Mobile's MapQueryViewModel — combines the (shared, lifted) filter state
@@ -20,6 +21,8 @@ export interface UseMapMarkersResult {
 // screen or on the Feed screen before switching routes (both read the same FilterProvider).
 export function useMapMarkers(filters: UseFiltersResult): UseMapMarkersResult {
   const [state, setState] = useState<MapMarkersState>({ status: "loading" });
+  const [retryNonce, setRetryNonce] = useState(0);
+  const retry = useCallback(() => setRetryNonce((n) => n + 1), []);
 
   const { dateBucket, city, artist } = filters.state;
   // Set has no referential equality across renders — derive a stable string key so the effect
@@ -53,7 +56,7 @@ export function useMapMarkers(filters: UseFiltersResult): UseMapMarkersResult {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateBucket, city, genresKey, artist?.id]);
+  }, [dateBucket, city, genresKey, artist?.id, retryNonce]);
 
-  return { state };
+  return { state, retry };
 }

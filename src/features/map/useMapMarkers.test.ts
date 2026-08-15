@@ -72,6 +72,20 @@ describe("useMapMarkers", () => {
     expect(String(url)).toContain(`city=${encodeURIComponent("Vitória")}`);
   });
 
+  it("given a failed request when retry is called then it re-fetches and can recover to loaded", async () => {
+    vi.mocked(fetch).mockRejectedValueOnce(new Error("network error"));
+
+    const { result } = renderHook(() => useMapMarkers(makeFilters()));
+
+    await waitFor(() => expect(result.current.state.status).toBe("error"));
+
+    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse({ data: [] }));
+    act(() => result.current.retry());
+
+    await waitFor(() => expect(result.current.state.status).toBe("loaded"));
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
   it("given the same filter state across re-renders when nothing changed then it does not re-fetch", async () => {
     vi.mocked(fetch).mockResolvedValue(jsonResponse({ data: [] }));
 

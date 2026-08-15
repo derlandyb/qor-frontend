@@ -37,7 +37,9 @@ export function deriveViewportState(
   bounds: Bounds | null,
 ): ViewportState {
   if (markers.length === 0) {
-    return hasActiveFilters ? { status: "no_filter_results", canClear: true } : { status: "empty_viewport" };
+    return hasActiveFilters
+      ? { status: "no_filter_results", canClear: true }
+      : { status: "empty_viewport" };
   }
 
   if (bounds === null) {
