@@ -41,6 +41,7 @@ interface FakeMap {
 vi.mock("mapbox-gl", () => {
   class FakeMapImpl implements FakeMap {
     static instances: FakeMap[] = [];
+    static throwOnNextConstruct = false;
     handlers: Record<string, (...args: never[]) => void> = {};
     source: FakeGeoJSONSource = {
       data: null,
@@ -54,6 +55,10 @@ vi.mock("mapbox-gl", () => {
     };
 
     constructor(public options: Record<string, unknown>) {
+      if (FakeMapImpl.throwOnNextConstruct) {
+        FakeMapImpl.throwOnNextConstruct = false;
+        throw new Error("An API access token is required to use Mapbox GL.");
+      }
       FakeMapImpl.instances.push(this);
     }
 
@@ -147,6 +152,8 @@ describe("MapPage", () => {
     await waitFor(() => expect(instance.source.data).toBeDefined());
     const data = instance.source.data as { features: unknown[] };
     expect(data.features).toHaveLength(1);
+
+    expect(await screen.findByText(/1 evento no mapa/i)).toBeInTheDocument();
   });
 
   it("given a filtered feed when the map opens then only matching markers appear", async () => {
@@ -240,6 +247,27 @@ describe("MapPage", () => {
 
     expect(await screen.findByRole("alert")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /tentar novamente/i })).toBeInTheDocument();
+  });
+
+  it("given no Mapbox access token when the map initializes then a retry-capable error is shown instead of crashing the page", async () => {
+    const MapClass = mapboxgl.Map as unknown as { throwOnNextConstruct: boolean };
+    MapClass.throwOnNextConstruct = true;
+
+    renderMapPage();
+
+    expect(await screen.findByRole("alert")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /tentar novamente/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Mapa" })).toBeInTheDocument();
+  });
+
+  it("given no Mapbox access token when the map initializes then the marker-count status still reflects the fetched data", async () => {
+    const MapClass = mapboxgl.Map as unknown as { throwOnNextConstruct: boolean };
+    MapClass.throwOnNextConstruct = true;
+
+    renderMapPage();
+
+    expect(await screen.findByRole("alert")).toBeInTheDocument();
+    expect(await screen.findByText(/1 evento no mapa/i)).toBeInTheDocument();
   });
 
   it("given active filters with zero matching events when the map loads then a clear-filters message is shown", async () => {

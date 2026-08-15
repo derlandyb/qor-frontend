@@ -41,6 +41,12 @@ export function MapPage() {
   const markersRef = useRef<Event[]>([]);
   const [bounds, setBounds] = useState<Bounds | null>(null);
   const [selection, setSelection] = useState<Selection>(null);
+  const [mapInitFailed, setMapInitFailed] = useState(false);
+  const [initNonce, setInitNonce] = useState(0);
+  const retryMapInit = () => {
+    setMapInitFailed(false);
+    setInitNonce((n) => n + 1);
+  };
 
   // Stabilizes the reference across renders where state isn't "loaded" — an inline `[]` literal
   // would otherwise be a new array every render, defeating the effects below that key off it.
@@ -53,11 +59,21 @@ export function MapPage() {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const map = new mapboxgl.Map({
-      container: containerRef.current,
-      style: "mapbox://styles/mapbox/streets-v12",
-      bounds: GRANDE_VITORIA_BOUNDS,
-    });
+    // mapboxgl.Map's constructor throws synchronously (not just an async "error" event) when
+    // there's no valid access token — without this guard, a missing/invalid VITE_MAPBOX_TOKEN
+    // crashes the whole route with no error boundary. Treated the same as MAP-007/012's "tiles/
+    // provider unavailable" case: a full-panel retry state, the rest of the app stays reachable.
+    let map: mapboxgl.Map;
+    try {
+      map = new mapboxgl.Map({
+        container: containerRef.current,
+        style: "mapbox://styles/mapbox/streets-v12",
+        bounds: GRANDE_VITORIA_BOUNDS,
+      });
+    } catch {
+      setMapInitFailed(true);
+      return;
+    }
     mapRef.current = map;
 
     map.on("load", () => {
@@ -131,7 +147,7 @@ export function MapPage() {
       mapRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initNonce]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -159,13 +175,22 @@ export function MapPage() {
       <div className="map-page__canvas-wrapper">
         <div className="map-page__canvas" ref={containerRef} />
 
-        {state.status === "loading" && (
+        {mapInitFailed && (
+          <div className="map-page__overlay map-page__overlay--error" role="alert">
+            <p className="body-lg">Não foi possível carregar o mapa.</p>
+            <button type="button" className="feed-state__retry" onClick={retryMapInit}>
+              Tentar novamente
+            </button>
+          </div>
+        )}
+
+        {!mapInitFailed && state.status === "loading" && (
           <p role="status" className="map-page__overlay">
             Carregando mapa…
           </p>
         )}
 
-        {state.status === "error" && (
+        {!mapInitFailed && state.status === "error" && (
           <div className="map-page__overlay map-page__overlay--error" role="alert">
             <p className="body-lg">Não foi possível carregar o mapa.</p>
             <button type="button" className="feed-state__retry" onClick={retry}>
@@ -174,19 +199,31 @@ export function MapPage() {
           </div>
         )}
 
-        {state.status === "loaded" && viewport.status === "empty_viewport" && (
+        {!mapInitFailed && state.status === "loaded" && viewport.status === "empty_viewport" && (
           <p role="status" className="map-page__overlay">
             Nenhum evento nesta área.
           </p>
         )}
 
-        {state.status === "loaded" && viewport.status === "no_filter_results" && (
+        {!mapInitFailed && state.status === "loaded" && viewport.status === "no_filter_results" && (
           <div className="map-page__overlay" role="status">
             <p className="body-lg">Nenhum evento encontrado para os filtros ativos.</p>
             <button type="button" className="feed-state__retry" onClick={filters.clearAll}>
               Limpar filtros
             </button>
           </div>
+        )}
+
+        {state.status === "loaded" && viewport.status === "normal" && (
+          // Markers themselves only exist inside Mapbox's own canvas (no DOM per-marker list,
+          // per map/design.md), which leaves screen-reader users with no non-visual equivalent —
+          // this status text is a genuine a11y affordance, not just a test hook. Not gated behind
+          // mapInitFailed: it reflects the fetched dataset, independent of whether Mapbox's own
+          // tiles rendered.
+          <p role="status" className="sr-only">
+            {viewport.visibleMarkers.length}{" "}
+            {viewport.visibleMarkers.length === 1 ? "evento" : "eventos"} no mapa
+          </p>
         )}
 
         {selection?.type === "single" && (
