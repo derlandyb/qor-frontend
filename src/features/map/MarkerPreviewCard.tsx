@@ -1,6 +1,6 @@
 import type { Event } from "../../types/event";
 import { EventCard } from "../feed/EventCard";
-import { useDialogFocus } from "./useDialogFocus";
+import { useDialogFocus } from "../../hooks/useDialogFocus";
 
 interface MarkerPreviewCardProps {
   event: Event;
