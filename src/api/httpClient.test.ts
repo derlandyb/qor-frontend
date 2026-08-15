@@ -20,6 +20,16 @@ describe("apiFetch", () => {
     expect(headers.has("Authorization")).toBe(false);
   });
 
+  it("given a token when a request is made then an Authorization header is sent", async () => {
+    vi.mocked(fetch).mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 200 }));
+
+    await apiFetch("/api/user", {}, "abc123");
+
+    const [, init] = vi.mocked(fetch).mock.calls[0];
+    const headers = init?.headers as Headers;
+    expect(headers.get("Authorization")).toBe("Bearer abc123");
+  });
+
   it("given a JSON body when a request is made then a content-type header is set", async () => {
     vi.mocked(fetch).mockResolvedValue(new Response("null", { status: 200 }));
 

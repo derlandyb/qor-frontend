@@ -19,15 +19,22 @@ export class ApiError extends Error {
   }
 }
 
-// No Authorization header — every consumer-web route this client calls today (starting with
-// GET /api/events) is deliberately anonymous, per event-feed/design.md's Architecture Overview
-// ("no Sanctum middleware sits in front of GET /api/events"). Add token injection here only once
-// a feature that actually needs it (e.g. auth, favorites) is implemented.
-export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
+// Every route this client called before `auth` (events/filters/map) is deliberately anonymous,
+// per event-feed/design.md's Architecture Overview ("no Sanctum middleware sits in front of
+// GET /api/events") — `token` stays optional and unset by default so those call sites are
+// unaffected. `auth`'s AuthContext is the first caller to pass one.
+export async function apiFetch<T>(
+  path: string,
+  init: RequestInit = {},
+  token?: string,
+): Promise<T> {
   const headers = new Headers(init.headers);
   headers.set("Accept", "application/json");
   if (init.body !== undefined && !(init.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
+  }
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
   }
 
   const response = await fetch(`${API_BASE_URL}${path}`, { ...init, headers });
