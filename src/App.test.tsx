@@ -38,4 +38,18 @@ describe("App", () => {
 
     expect(screen.getAllByRole("link", { name: /início/i }).length).toBeGreaterThan(0);
   });
+
+  it("given a visitor when opening an unrelated route then no filter-options requests fire", async () => {
+    render(
+      <MemoryRouter initialEntries={["/perfil"]}>
+        <App />
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByRole("heading", { name: "Perfil" })).toBeInTheDocument();
+
+    const fetchMock = fetch as unknown as ReturnType<typeof vi.fn>;
+    const requestedUrls = fetchMock.mock.calls.map((call) => String(call[0]));
+    expect(requestedUrls.some((url) => url.includes("/api/filter-options/"))).toBe(false);
+  });
 });

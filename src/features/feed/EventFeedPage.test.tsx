@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { makeEvent } from "../../test/factories";
+import { FilterProvider } from "../filters/FilterProvider";
 import { EventFeedPage } from "./EventFeedPage";
 
 function jsonResponse(body: unknown, status = 200) {
@@ -12,7 +13,9 @@ function jsonResponse(body: unknown, status = 200) {
 function renderPage(initialEntry = "/") {
   return render(
     <MemoryRouter initialEntries={[initialEntry]}>
-      <EventFeedPage />
+      <FilterProvider>
+        <EventFeedPage />
+      </FilterProvider>
     </MemoryRouter>,
   );
 }

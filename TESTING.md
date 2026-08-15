@@ -56,6 +56,55 @@ the host.
   readable bookmarkable URL, translated to repeated `genres[]` keys only where `fetchEventFeed`
   needs them.
 
+## `map` (`WEB-MAP-01`, 2026-08-14)
+
+- Unit/component (Vitest + RTL): **167** total (up from 119). New coverage: `src/features/filters/FilterProvider`
+  (the filter state lifted above the Feed+Map route pair, per `map/design.md`'s filter-state-lifetime
+  decision — `EventFeedPage` now reads it via `useFilterContext()` instead of owning
+  `useUrlSyncedFilters()` itself), `src/api/mapApi`, `src/features/map/*` (`useMapMarkers`,
+  `viewportState`'s pure `deriveViewportState`, `geojson`, `MapPage`, `MarkerPreviewCard`,
+  `ClusterListPanel`, `useDialogFocus`).
+- UI/e2e (Playwright): **12** total (up from 8) — `e2e/map.spec.ts` (2, matching `WEB-MAP-01`'s
+  named tests), plus the existing `feed.spec.ts` (2), `event-detail.spec.ts` (2), and
+  `search-and-filters.spec.ts` (4). Mocks `GET /api/events/map` and `GET /api/filter-options/*`
+  via `page.route(...)` — no live backend required.
+- `make coverage` passes (≥80% lines/branches/functions/statements): 97.73% stmts / 89.74% branch
+  / 93.75% funcs / 97.73% lines.
+- **Review fixes** (`react-pr-reviewer`, PR #4): `FilterProvider` was originally mounted around the
+  entire route tree instead of just the Feed+Map pair the design doc calls for — unrelated routes
+  (event details, favorites, profile) were paying for its `/api/filter-options/*` fetches for no
+  reason. Rescoped via a `FeedAndMapLayout` route element wrapping only `/` and `/mapa`, covered by
+  a new `App.test.tsx` case asserting no filter-options request fires when opening `/perfil`.
+  `MarkerPreviewCard`/`ClusterListPanel` (`role="dialog"`, not `aria-modal` since the map stays
+  interactive underneath) also had no keyboard way in or out — only the mouse-only close button
+  worked. Added a shared `useDialogFocus` hook: moves focus into the panel on open, wires Escape to
+  the same `onClose` the close button uses, and restores focus to the tapped marker/cluster on
+  close.
+- Clustering is entirely Mapbox GL JS's own responsibility (its built-in `cluster: true` GeoJSON
+  source, internally Supercluster) — this codebase only builds the GeoJSON feature collection
+  (`geojson.ts`) and reacts to `click`/`moveend` events. `viewportState.ts`'s `deriveViewportState`
+  is the one piece of state-derivation logic that _is_ app code (mirroring Mobile's equivalent
+  unit-testable surface per `map/design.md`'s Testing Strategy) — it distinguishes an "empty
+  viewport" (markers exist elsewhere) from "zero filter results" (no markers anywhere, filters
+  active, offers "Limpar filtros").
+- `mapbox-gl` needs mocking in Vitest/jsdom (no WebGL) — `MapPage.test.tsx` mocks the module with a
+  fake `Map` class that records registered `on(event[, layer], handler)` callbacks and a fake
+  `GeoJSONSource`, letting tests simulate `load`/`moveend`/cluster-and-marker `click` events
+  directly without a real WebGL context.
+- `mapboxgl.Map`'s constructor throws **synchronously** (not just an async `error` event) when
+  `VITE_MAPBOX_TOKEN` is missing/invalid — confirmed by manually running the real dev server
+  without a token, which crashed the whole `/mapa` route with no error boundary. The `vi.mock`
+  fake `Map` never threw, so the unit suite alone didn't catch this; fixed by wrapping the
+  `new mapboxgl.Map(...)` call in try/catch and treating a failure the same as MAP-007/012's
+  "tiles/provider unavailable" case (full-panel retry, rest of the app stays reachable). A
+  regression test drives the fake `Map`'s constructor to throw to cover this path.
+- Since markers only exist inside Mapbox's own canvas (no DOM per-marker list, per
+  `map/design.md`), there's no non-visual equivalent for screen-reader users or for e2e assertions
+  — added a `sr-only` marker-count status announcement (global `.sr-only` utility class, reused
+  from the same pattern as `.skip-link`) that both e2e tests in `map.spec.ts` assert on instead of
+  Mapbox's own canvas/pixel output; real Mapbox network calls (`*.mapbox.com`) are blocked via
+  `page.route` so the e2e suite never depends on network access or a real token.
+
 ## Notable fixes found only by testing across environments
 
 - `groupEventsByDate` originally derived an event's date via `new Date(iso).getFullYear()/

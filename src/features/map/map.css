@@ -1,0 +1,102 @@
+/* Mapbox GL JS canvas + overlay states for the /mapa route. Reuses feed.css's design tokens and
+ * .feed-state__retry button style rather than redefining button chrome. */
+
+.map-page__heading {
+  margin-top: 0;
+}
+
+.map-page__canvas-wrapper {
+  position: relative;
+  height: calc(100vh - var(--space-stack-lg) * 6);
+  min-height: 420px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.map-page__canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.map-page__overlay {
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-stack-lg);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-stack-sm);
+  text-align: center;
+  padding: var(--space-stack-md);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-container-lowest);
+  box-shadow: var(--elevation-level1);
+  z-index: 2;
+}
+
+.map-page__overlay--error {
+  top: 50%;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+}
+
+.map-marker-preview {
+  position: absolute;
+  left: var(--space-stack-md);
+  right: var(--space-stack-md);
+  bottom: var(--space-stack-md);
+  max-width: 360px;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-container-lowest);
+  box-shadow: var(--elevation-level1);
+  padding: var(--space-stack-sm);
+  z-index: 3;
+}
+
+.map-marker-preview__close,
+.map-cluster-list__close {
+  position: absolute;
+  top: var(--space-stack-sm);
+  right: var(--space-stack-sm);
+  width: var(--size-icon-affordance);
+  height: var(--size-icon-affordance);
+  border: none;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  z-index: 4;
+}
+
+.map-marker-preview__details-link {
+  display: block;
+  text-align: center;
+  margin-top: var(--space-stack-sm);
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.map-cluster-list {
+  position: absolute;
+  inset: var(--space-stack-md);
+  top: auto;
+  bottom: var(--space-stack-md);
+  max-height: 70%;
+  overflow-y: auto;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-container-lowest);
+  box-shadow: var(--elevation-level1);
+  padding: var(--space-stack-md);
+  z-index: 3;
+}
+
+.map-cluster-list__header {
+  position: relative;
+  margin-bottom: var(--space-stack-sm);
+}
+
+.map-cluster-list__items {
+  gap: var(--space-stack-sm);
+}
