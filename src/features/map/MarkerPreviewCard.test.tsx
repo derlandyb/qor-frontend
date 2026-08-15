@@ -33,4 +33,37 @@ describe("MarkerPreviewCard", () => {
 
     expect(onClose).toHaveBeenCalledOnce();
   });
+
+  it("given the preview opens then focus moves into the dialog", () => {
+    renderCard();
+
+    expect(screen.getByRole("dialog")).toHaveFocus();
+  });
+
+  it("given the preview is open when Escape is pressed then onClose is called", async () => {
+    const { onClose } = renderCard();
+
+    await userEvent.keyboard("{Escape}");
+
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it("given a marker was focused when the preview opens and then closes then focus returns to the marker", () => {
+    const trigger = document.createElement("button");
+    trigger.textContent = "marker";
+    document.body.appendChild(trigger);
+    trigger.focus();
+
+    const { unmount } = render(
+      <MemoryRouter>
+        <MarkerPreviewCard event={makeEvent({ id: "e1" })} onClose={vi.fn()} />
+      </MemoryRouter>,
+    );
+    expect(trigger).not.toHaveFocus();
+
+    unmount();
+
+    expect(trigger).toHaveFocus();
+    trigger.remove();
+  });
 });

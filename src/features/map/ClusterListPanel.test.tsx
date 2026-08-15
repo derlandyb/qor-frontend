@@ -38,6 +38,48 @@ describe("ClusterListPanel", () => {
     expect(onClose).toHaveBeenCalledOnce();
   });
 
+  it("given the list opens then focus moves into the dialog", () => {
+    render(
+      <MemoryRouter>
+        <ClusterListPanel events={[makeEvent()]} onClose={vi.fn()} />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole("dialog")).toHaveFocus();
+  });
+
+  it("given the list is open when Escape is pressed then onClose is called", async () => {
+    const onClose = vi.fn();
+    render(
+      <MemoryRouter>
+        <ClusterListPanel events={[makeEvent()]} onClose={onClose} />
+      </MemoryRouter>,
+    );
+
+    await userEvent.keyboard("{Escape}");
+
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it("given a marker was focused when the list opens and then closes then focus returns to the marker", () => {
+    const trigger = document.createElement("button");
+    trigger.textContent = "marker";
+    document.body.appendChild(trigger);
+    trigger.focus();
+
+    const { unmount } = render(
+      <MemoryRouter>
+        <ClusterListPanel events={[makeEvent()]} onClose={vi.fn()} />
+      </MemoryRouter>,
+    );
+    expect(trigger).not.toHaveFocus();
+
+    unmount();
+
+    expect(trigger).toHaveFocus();
+    trigger.remove();
+  });
+
   it("given an event in the list when its card link is present then it points at that event's own detail page", () => {
     const events = [makeEvent({ id: "42", title: "Show Único" })];
 

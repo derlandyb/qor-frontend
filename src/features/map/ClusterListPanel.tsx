@@ -1,5 +1,6 @@
 import type { Event } from "../../types/event";
 import { EventCard } from "../feed/EventCard";
+import { useDialogFocus } from "./useDialogFocus";
 
 interface ClusterListPanelProps {
   events: Event[];
@@ -11,12 +12,18 @@ interface ClusterListPanelProps {
 // spec: a scrollable list of mini-cards over the dimmed map, matching the "Mapa de Eventos"
 // overlay card's rounded-lg/pill visual language. Reuses EventCard.tsx unchanged, each already a
 // full link into its own detail page (MAP-004/010's "tappable into its own preview/detail").
+// useDialogFocus moves focus in on open, wires Escape to onClose, and restores focus to the
+// tapped cluster/venue marker on close.
 export function ClusterListPanel({ events, onClose }: ClusterListPanelProps) {
+  const dialogRef = useDialogFocus<HTMLDivElement>(onClose);
+
   return (
     <div
       className="map-cluster-list"
       role="dialog"
       aria-label={`${events.length} eventos nesta área`}
+      tabIndex={-1}
+      ref={dialogRef}
     >
       <div className="map-cluster-list__header">
         <h3 className="headline-sm">{events.length} eventos nesta área</h3>
