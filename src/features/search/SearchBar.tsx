@@ -12,6 +12,7 @@ export function SearchBar({ value, onChange, onClear }: SearchBarProps) {
     <div className="search-bar">
       <Icon name="search" className="search-bar__icon" />
       <input
+        name="search"
         type="search"
         className="search-bar__input"
         placeholder="O que você quer ouvir?"
