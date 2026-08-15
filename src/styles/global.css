@@ -268,3 +268,34 @@ main {
     border-bottom-color: var(--color-accent-container);
   }
 }
+
+/* ==== Buttons ===========================================================
+   Ported from design-system/preview/styles.css (`.btn`/`.btn--primary`/
+   `.btn--secondary`) on `auth`'s first need for a generic CTA button — no
+   prior feature needed one (EventCard/filters/search all use their own
+   bespoke controls). `.btn--accent` intentionally left unported, unused
+   outside the static preview so far. */
+
+.btn {
+  border: none;
+  border-radius: var(--radius-xl);
+  padding: var(--space-btn-y) var(--space-btn-x);
+  font-size: var(--font-body-md-size);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn--primary {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary);
+}
+
+.btn--secondary {
+  background: var(--color-secondary-container);
+  color: var(--color-primary);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

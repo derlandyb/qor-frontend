@@ -1,17 +1,13 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import { makeEvent } from "../../test/factories";
+import { renderWithProviders } from "../../test/renderWithProviders";
 import { MarkerPreviewCard } from "./MarkerPreviewCard";
 
 function renderCard(onClose = vi.fn()) {
   const event = makeEvent({ id: "e1", title: "Noite Sertaneja Premium" });
-  render(
-    <MemoryRouter>
-      <MarkerPreviewCard event={event} onClose={onClose} />
-    </MemoryRouter>,
-  );
+  renderWithProviders(<MarkerPreviewCard event={event} onClose={onClose} />);
   return { event, onClose };
 }
 
@@ -54,10 +50,8 @@ describe("MarkerPreviewCard", () => {
     document.body.appendChild(trigger);
     trigger.focus();
 
-    const { unmount } = render(
-      <MemoryRouter>
-        <MarkerPreviewCard event={makeEvent({ id: "e1" })} onClose={vi.fn()} />
-      </MemoryRouter>,
+    const { unmount } = renderWithProviders(
+      <MarkerPreviewCard event={makeEvent({ id: "e1" })} onClose={vi.fn()} />,
     );
     expect(trigger).not.toHaveFocus();
 

@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { AuthProvider } from "../../auth/AuthContext";
+import { GatedActionProvider } from "../../auth/GatedActionProvider";
 import { makeEvent } from "../../test/factories";
 import { FilterProvider } from "../filters/FilterProvider";
 import { EventFeedPage } from "./EventFeedPage";
@@ -13,9 +15,13 @@ function jsonResponse(body: unknown, status = 200) {
 function renderPage(initialEntry = "/") {
   return render(
     <MemoryRouter initialEntries={[initialEntry]}>
-      <FilterProvider>
-        <EventFeedPage />
-      </FilterProvider>
+      <AuthProvider>
+        <GatedActionProvider>
+          <FilterProvider>
+            <EventFeedPage />
+          </FilterProvider>
+        </GatedActionProvider>
+      </AuthProvider>
     </MemoryRouter>,
   );
 }

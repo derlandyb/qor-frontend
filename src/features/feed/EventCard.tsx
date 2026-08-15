@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Icon } from "../../components/icons/Icon";
+import { useGatedAction } from "../../auth/useGatedAction";
 import type { Event } from "../../types/event";
 
 interface EventCardProps {
@@ -27,9 +28,11 @@ function formatPrice(event: Event): string | null {
 
 export function EventCard({ event }: EventCardProps) {
   // Cosmetic toggle only — favorites' real add/remove/persist behavior belongs to the
-  // (not-yet-built) `favorites` feature. This mirrors the static approval sample's
-  // main.js behavior: a tactile preview, no API call.
+  // (not-yet-built) `favorites` feature, which will replace this local setState with a real
+  // API call inside the same gate. Gating it behind useGatedAction is `auth`'s job (AUTH-004):
+  // an anonymous tap must prompt login before anything toggles.
   const [isFavorited, setIsFavorited] = useState(Boolean(event.isFavorited));
+  const gate = useGatedAction();
 
   const time = TIME_FORMATTER.format(new Date(event.startDateTime));
   const price = formatPrice(event);
@@ -95,7 +98,7 @@ export function EventCard({ event }: EventCardProps) {
           type="button"
           aria-pressed={isFavorited}
           aria-label={`Favoritar ${event.title}`}
-          onClick={() => setIsFavorited((current) => !current)}
+          onClick={() => gate(() => setIsFavorited((current) => !current))}
         >
           <Icon name="favorite" />
         </button>
