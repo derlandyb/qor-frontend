@@ -56,4 +56,11 @@ describe("ResetPasswordPage", () => {
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Link expirado, solicite um novo.");
   });
+
+  it("given a URL with no token or email when the page loads then an invalid-link state is shown instead of a form", () => {
+    renderPage("");
+
+    expect(screen.getByRole("alert")).toHaveTextContent(/link de redefinição é inválido/i);
+    expect(screen.queryByLabelText("Nova senha")).not.toBeInTheDocument();
+  });
 });

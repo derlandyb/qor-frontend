@@ -94,6 +94,24 @@ describe("AuthOverlay", () => {
     expect(onDismiss).toHaveBeenCalledOnce();
   });
 
+  it("given focus is on the last focusable control when Tab is pressed then focus wraps to the first control, not out of the dialog", async () => {
+    renderOverlay("login");
+
+    screen.getByRole("button", { name: "Criar conta" }).focus();
+    await userEvent.tab();
+
+    expect(screen.getByRole("button", { name: "Fechar" })).toHaveFocus();
+  });
+
+  it("given focus is on the first focusable control when Shift+Tab is pressed then focus wraps to the last control, not out of the dialog", async () => {
+    renderOverlay("login");
+
+    screen.getByRole("button", { name: "Fechar" }).focus();
+    await userEvent.tab({ shift: true });
+
+    expect(screen.getByRole("button", { name: "Criar conta" })).toHaveFocus();
+  });
+
   it("given a successful signup when submitted then a confirmation step shows before onSuccess runs", async () => {
     vi.stubGlobal(
       "fetch",

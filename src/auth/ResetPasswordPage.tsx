@@ -11,6 +11,7 @@ export function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token") ?? "";
   const email = searchParams.get("email") ?? "";
+  const isValidLink = token !== "" && email !== "";
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,6 +39,15 @@ export function ResetPasswordPage() {
           <div className="auth-overlay__confirmation">
             <p className="body-lg">Senha redefinida com sucesso.</p>
             <Link className="btn btn--primary" to="/">
+              Ir para o início
+            </Link>
+          </div>
+        ) : !isValidLink ? (
+          <div className="auth-overlay__confirmation">
+            <p className="auth-overlay__error" role="alert">
+              Este link de redefinição é inválido. Solicite um novo.
+            </p>
+            <Link className="btn btn--secondary" to="/">
               Ir para o início
             </Link>
           </div>

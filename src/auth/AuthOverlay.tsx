@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type MouseEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent, type MouseEvent } from "react";
 import { createPortal } from "react-dom";
 import { useDialogFocus } from "../hooks/useDialogFocus";
 import { GoogleSignInButton } from "./GoogleSignInButton";
@@ -29,7 +29,18 @@ export function AuthOverlay({ initialMode, onSuccess, onDismiss }: AuthOverlayPr
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const dialogRef = useDialogFocus<HTMLDivElement>(onDismiss);
+  // trapFocus: true — a genuine aria-modal dialog, unlike the map's non-modal panels this hook
+  // was originally built for (review finding, PR #5: aria-modal="true" without a focus trap lets
+  // a keyboard user tab out into the page behind the backdrop).
+  const dialogRef = useDialogFocus<HTMLDivElement>(onDismiss, { trapFocus: true });
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
 
   async function handleLoginSubmit(event: FormEvent) {
     event.preventDefault();
@@ -59,15 +70,22 @@ export function AuthOverlay({ initialMode, onSuccess, onDismiss }: AuthOverlayPr
     }
   }
 
-  async function handleGoogleCredential(idToken: string) {
-    setError(null);
-    try {
-      await loginWithGoogle(idToken);
-      onSuccess();
-    } catch (err) {
-      setError((err as Error).message);
-    }
-  }
+  // Stable identity — useGoogleIdentityServices' effect depends on this callback, and
+  // window.google.accounts.id.initialize()/renderButton() re-running on every keystroke
+  // (a new function each render otherwise) would be wasted work once a real client id is
+  // configured (review finding, PR #5).
+  const handleGoogleCredential = useCallback(
+    async (idToken: string) => {
+      setError(null);
+      try {
+        await loginWithGoogle(idToken);
+        onSuccess();
+      } catch (err) {
+        setError((err as Error).message);
+      }
+    },
+    [loginWithGoogle, onSuccess],
+  );
 
   async function handleResetRequestSubmit(event: FormEvent) {
     event.preventDefault();

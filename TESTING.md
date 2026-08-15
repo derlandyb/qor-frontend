@@ -107,18 +107,19 @@ the host.
 
 ## `auth` (`WEB-AUTH-01`, 2026-08-15)
 
-- Unit/component (Vitest + RTL): **206** total (up from 167). New coverage: `src/auth/*`
+- Unit/component (Vitest + RTL): **212** total (up from 167). New coverage: `src/auth/*`
   (`tokenStore`, `AuthContext`/`useAuth`, `AuthOverlay`, `GoogleSignInButton`,
   `useGoogleIdentityServices`, `GatedActionProvider`/`useGatedAction`, `ResetPasswordPage`),
   `src/api/authApi`, `httpClient`'s new token-injection branch, `src/hooks/useDialogFocus`
   (relocated from `src/features/map/`, now a second consumer alongside `MarkerPreviewCard`/
-  `ClusterListPanel`), and `EventCard`'s newly-gated favorite button.
-- UI/e2e (Playwright): **14** total (up from 12) — `e2e/auth.spec.ts` (2, matching `WEB-AUTH-01`'s
+  `ClusterListPanel`, and given its own dedicated test file for the first time), and
+  `EventCard`'s newly-gated favorite button.
+- UI/e2e (Playwright): **12** total (up from 10) — `e2e/auth.spec.ts` (2, matching `WEB-AUTH-01`'s
   named tests), run against the Feed page's real favorite button (the one concrete gated-action
   call site in the app today — see below). Mocks `GET /api/events` and `POST /api/login` via
   `page.route(...)` — no live backend required.
 - `make coverage` passes (≥80% lines/branches/functions/statements): 97.13% stmts / 89.09% branch
-  / 93.27% funcs / 97.13% lines.
+  / 93.27% funcs / 97.13% lines (pre-review-fix baseline; unchanged materially by the fixes below).
 - **Backend contract deviations from `auth/design.md`**, confirmed against the already-merged
   `api` code rather than the design doc's literal snippets: (1) `PasswordResetController@reset`
   returns only a confirmation message — Laravel's `PasswordBroker::reset()` doesn't issue a
@@ -151,6 +152,21 @@ the host.
 - `.btn`/`.btn--primary`/`.btn--secondary` were ported from `design-system/preview/styles.css`
   into `src/styles/global.css` on this feature's first need for a generic CTA button — no prior
   feature needed one (`EventCard`/`filters`/`search` all use their own bespoke controls).
+- **Review fixes** (`react-pr-reviewer`, PR #5): `AuthOverlay` declared `aria-modal="true"` but
+  `useDialogFocus` (built for the map's non-modal floating panels, which deliberately leave the
+  map interactive underneath) never trapped Tab/Shift+Tab — a keyboard user could tab straight
+  out of the dialog into the page behind the backdrop. `useDialogFocus` gained an opt-in
+  `trapFocus` option (cycles Tab/Shift+Tab within the dialog's own focusable elements; the map's
+  two call sites are unaffected, still `trapFocus: false` by default), and `AuthOverlay` now also
+  locks `<body>` scroll while mounted. Covered by three new tests (two on `AuthOverlay`, one
+  dedicated `useDialogFocus.test.tsx` covering both the trapped and untrapped paths — its first
+  direct test file). Also fixed: `AuthOverlay`'s `handleGoogleCredential` was a new function
+  identity every render (e.g. every keystroke in the email/password fields), which
+  `useGoogleIdentityServices`' effect depends on — once a real `VITE_GOOGLE_CLIENT_ID` is
+  configured, this would have re-run `google.accounts.id.initialize()`/`renderButton()` on every
+  keystroke; wrapped in `useCallback`. `ResetPasswordPage` also gained an explicit invalid-link
+  state (no `token`/`email` in the URL) instead of silently rendering a form that would only fail
+  once submitted.
 
 ## Notable fixes found only by testing across environments
 
