@@ -8,7 +8,7 @@ import { clearToken } from "./tokenStore";
 
 function renderPage(query = "?token=reset-token&email=ana%40example.com") {
   return render(
-    <MemoryRouter initialEntries={[`/redefinir-senha${query}`]}>
+    <MemoryRouter initialEntries={[`/reset-password${query}`]}>
       <AuthProvider>
         <ResetPasswordPage />
       </AuthProvider>

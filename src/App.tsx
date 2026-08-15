@@ -34,7 +34,11 @@ function App() {
             <Route path="/favoritos" element={<PlaceholderPage title="Favoritos" />} />
             <Route path="/perfil" element={<PlaceholderPage title="Perfil" />} />
             <Route path="/eventos/:id" element={<EventDetailPage />} />
-            <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
+            {/* Path is "/reset-password", not a Portuguese route, because api's
+                AppServiceProvider::boot() hardcodes this exact segment when building the
+                ResetPassword notification's emailed link (see api/app/Providers/
+                AppServiceProvider.php) — confirmed against a real Mailhog-captured email. */}
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
           </Routes>
         </Layout>
       </GatedActionProvider>
