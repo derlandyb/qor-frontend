@@ -1,8 +1,8 @@
 import { ActiveFilterChips } from "../filters/ActiveFilterChips";
 import { FilterBar } from "../filters/FilterBar";
+import { useFilterContext } from "../filters/FilterProvider";
 import { formatActiveFiltersSummary } from "../filters/filterChipLabel";
 import { useFilteredFeed } from "../filters/useFilteredFeed";
-import { useUrlSyncedFilters } from "../filters/useUrlSyncedFilters";
 import { SearchBar } from "../search/SearchBar";
 import { DateSectionHeader } from "./DateSectionHeader";
 import { EmptyState } from "./EmptyState";
@@ -14,7 +14,7 @@ import "./feed.css";
 import { useEventFeed } from "./useEventFeed";
 
 export function EventFeedPage() {
-  const { search, filters } = useUrlSyncedFilters();
+  const { search, filters } = useFilterContext();
   const { state: filteredFeedState, retry: retryFilteredFeed } = useFilteredFeed(search, filters);
 
   // Called unconditionally (hooks rule) — its infinite-scroll fetch keeps running harmlessly
