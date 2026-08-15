@@ -1,4 +1,3 @@
-import { useCallback, useState } from "react";
 import type { Event } from "../../types/event";
 
 export interface Bounds {
@@ -52,26 +51,4 @@ export function deriveViewportState(
   }
 
   return { status: "normal", visibleMarkers };
-}
-
-export interface UseMapViewportStateResult {
-  bounds: Bounds | null;
-  setBounds: (bounds: Bounds) => void;
-  state: (markers: Event[], hasActiveFilters: boolean) => ViewportState;
-}
-
-// Thin stateful wrapper around deriveViewportState — MapPage calls setBounds on the map's
-// moveend event; the pure derivation above stays independently unit-testable without a Mapbox
-// instance.
-export function useMapViewportState(): UseMapViewportStateResult {
-  const [bounds, setBoundsState] = useState<Bounds | null>(null);
-
-  const setBounds = useCallback((next: Bounds) => setBoundsState(next), []);
-  const state = useCallback(
-    (markers: Event[], hasActiveFilters: boolean) =>
-      deriveViewportState(markers, hasActiveFilters, bounds),
-    [bounds],
-  );
-
-  return { bounds, setBounds, state };
 }

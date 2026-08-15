@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { makeEvent, makeVenue } from "../../test/factories";
-import { deriveViewportState, type Bounds } from "./useMapViewportState";
+import { deriveViewportState, type Bounds } from "./viewportState";
 
 const GRANDE_VITORIA_BOUNDS: Bounds = { north: -19.9, south: -20.5, east: -40.1, west: -40.5 };
 const OUTSIDE_BOUNDS: Bounds = { north: 10, south: 5, east: 10, west: 5 };

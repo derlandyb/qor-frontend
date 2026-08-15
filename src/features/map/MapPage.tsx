@@ -19,7 +19,7 @@ import {
 import { ClusterListPanel } from "./ClusterListPanel";
 import { MarkerPreviewCard } from "./MarkerPreviewCard";
 import { useMapMarkers } from "./useMapMarkers";
-import { deriveViewportState, type Bounds } from "./useMapViewportState";
+import { deriveViewportState, type Bounds } from "./viewportState";
 
 // Public, client-side token — same pattern as any map-tile provider (map/design.md's
 // Integration Points). No location permission is ever requested (MAP-005): the map's initial
