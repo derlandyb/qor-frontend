@@ -58,18 +58,28 @@ the host.
 
 ## `map` (`WEB-MAP-01`, 2026-08-14)
 
-- Unit/component (Vitest + RTL): **160** total (up from 119). New coverage: `src/features/filters/FilterProvider`
+- Unit/component (Vitest + RTL): **167** total (up from 119). New coverage: `src/features/filters/FilterProvider`
   (the filter state lifted above the Feed+Map route pair, per `map/design.md`'s filter-state-lifetime
   decision — `EventFeedPage` now reads it via `useFilterContext()` instead of owning
   `useUrlSyncedFilters()` itself), `src/api/mapApi`, `src/features/map/*` (`useMapMarkers`,
   `viewportState`'s pure `deriveViewportState`, `geojson`, `MapPage`, `MarkerPreviewCard`,
-  `ClusterListPanel`).
+  `ClusterListPanel`, `useDialogFocus`).
 - UI/e2e (Playwright): **12** total (up from 8) — `e2e/map.spec.ts` (2, matching `WEB-MAP-01`'s
   named tests), plus the existing `feed.spec.ts` (2), `event-detail.spec.ts` (2), and
   `search-and-filters.spec.ts` (4). Mocks `GET /api/events/map` and `GET /api/filter-options/*`
   via `page.route(...)` — no live backend required.
-- `make coverage` passes (≥80% lines/branches/functions/statements): 97.67% stmts / 89.54% branch
-  / 93.5% funcs / 97.67% lines.
+- `make coverage` passes (≥80% lines/branches/functions/statements): 97.73% stmts / 89.74% branch
+  / 93.75% funcs / 97.73% lines.
+- **Review fixes** (`react-pr-reviewer`, PR #4): `FilterProvider` was originally mounted around the
+  entire route tree instead of just the Feed+Map pair the design doc calls for — unrelated routes
+  (event details, favorites, profile) were paying for its `/api/filter-options/*` fetches for no
+  reason. Rescoped via a `FeedAndMapLayout` route element wrapping only `/` and `/mapa`, covered by
+  a new `App.test.tsx` case asserting no filter-options request fires when opening `/perfil`.
+  `MarkerPreviewCard`/`ClusterListPanel` (`role="dialog"`, not `aria-modal` since the map stays
+  interactive underneath) also had no keyboard way in or out — only the mouse-only close button
+  worked. Added a shared `useDialogFocus` hook: moves focus into the panel on open, wires Escape to
+  the same `onClose` the close button uses, and restores focus to the tapped marker/cluster on
+  close.
 - Clustering is entirely Mapbox GL JS's own responsibility (its built-in `cluster: true` GeoJSON
   source, internally Supercluster) — this codebase only builds the GeoJSON feature collection
   (`geojson.ts`) and reacts to `click`/`moveend` events. `viewportState.ts`'s `deriveViewportState`
