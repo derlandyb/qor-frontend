@@ -3,7 +3,11 @@ import { apiFetch } from "./httpClient";
 
 // RegisterRequest's `confirmed` rule requires password_confirmation on the wire even though the
 // UI only ever collects one password field once client-side confirmation already matched it.
-export async function register(name: string, email: string, password: string): Promise<AuthResponse> {
+export async function register(
+  name: string,
+  email: string,
+  password: string,
+): Promise<AuthResponse> {
   return apiFetch<AuthResponse>("/api/register", {
     method: "POST",
     body: JSON.stringify({ name, email, password, password_confirmation: password }),
@@ -39,11 +43,7 @@ export async function requestPasswordReset(email: string): Promise<void> {
 // (Laravel's PasswordBroker::reset() does not issue a Sanctum token) — the user logs in
 // separately afterward, unlike auth/design.md's original "issues a fresh token" assumption.
 // password_confirmation is required by ResetPasswordRequest's `confirmed` rule.
-export async function resetPassword(
-  token: string,
-  email: string,
-  password: string,
-): Promise<void> {
+export async function resetPassword(token: string, email: string, password: string): Promise<void> {
   await apiFetch<void>("/api/password/reset", {
     method: "POST",
     body: JSON.stringify({ token, email, password, password_confirmation: password }),

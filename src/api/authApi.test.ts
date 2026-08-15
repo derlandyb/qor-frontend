@@ -32,7 +32,10 @@ describe("authApi", () => {
     const result = await register("Ana", "ana@example.com", "senha123");
 
     const [, init] = vi.mocked(fetch).mock.calls[0];
-    expect(jsonBody(init)).toMatchObject({ password: "senha123", password_confirmation: "senha123" });
+    expect(jsonBody(init)).toMatchObject({
+      password: "senha123",
+      password_confirmation: "senha123",
+    });
     expect(result).toEqual({ user: USER, token: "tok" });
   });
 

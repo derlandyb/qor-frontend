@@ -105,6 +105,53 @@ the host.
   Mapbox's own canvas/pixel output; real Mapbox network calls (`*.mapbox.com`) are blocked via
   `page.route` so the e2e suite never depends on network access or a real token.
 
+## `auth` (`WEB-AUTH-01`, 2026-08-15)
+
+- Unit/component (Vitest + RTL): **206** total (up from 167). New coverage: `src/auth/*`
+  (`tokenStore`, `AuthContext`/`useAuth`, `AuthOverlay`, `GoogleSignInButton`,
+  `useGoogleIdentityServices`, `GatedActionProvider`/`useGatedAction`, `ResetPasswordPage`),
+  `src/api/authApi`, `httpClient`'s new token-injection branch, `src/hooks/useDialogFocus`
+  (relocated from `src/features/map/`, now a second consumer alongside `MarkerPreviewCard`/
+  `ClusterListPanel`), and `EventCard`'s newly-gated favorite button.
+- UI/e2e (Playwright): **14** total (up from 12) — `e2e/auth.spec.ts` (2, matching `WEB-AUTH-01`'s
+  named tests), run against the Feed page's real favorite button (the one concrete gated-action
+  call site in the app today — see below). Mocks `GET /api/events` and `POST /api/login` via
+  `page.route(...)` — no live backend required.
+- `make coverage` passes (≥80% lines/branches/functions/statements): 97.13% stmts / 89.09% branch
+  / 93.27% funcs / 97.13% lines.
+- **Backend contract deviations from `auth/design.md`**, confirmed against the already-merged
+  `api` code rather than the design doc's literal snippets: (1) `PasswordResetController@reset`
+  returns only a confirmation message — Laravel's `PasswordBroker::reset()` doesn't issue a
+  session token — so `resetPassword()` no longer auto-adopts a session; the user logs in
+  separately afterward, unlike design.md's "issues a fresh Sanctum token" assumption; (2)
+  `RegisterRequest`/`ResetPasswordRequest` both require `password_confirmation` on the wire
+  (Laravel's `confirmed` rule) even though the UI only collects one password field — `authApi.ts`
+  sends the same value twice rather than adding a second confirm-password input, since no AUTH
+  requirement asks for one; (3) session-resume uses the plain `GET /api/user` route (returns the
+  raw `User` row) rather than `/api/admin/me`'s `{user, mustChangePassword}` envelope — that
+  route is admin-only, and the consumer `User` model has no `mustChangePassword` concept.
+- **Deliberate scope decision**: `EventCard`'s existing cosmetic favorite toggle (added during
+  `event-feed`, explicitly stubbed pending the not-yet-built `favorites` feature) is now gated
+  behind the new `useGatedAction()` hook — the one concrete call site needed to exercise
+  `WEB-AUTH-01`'s two named tests against a real page instead of a synthetic test harness.
+  Authenticated behavior is unchanged (local `setState`, no API call yet); anonymous clicks now
+  open `AuthOverlay` first and replay the toggle on success. `favorites` will replace the local
+  `setState` with a real API call inside the same gate.
+- `GatedActionProvider` is mounted once, app-wide, in `App.tsx` (unlike the Feed/Map-scoped
+  `FilterProvider`) since a gated action can originate from any route. Any test that renders
+  `EventCard` (directly, or transitively via `EventFeedPage`/`MarkerPreviewCard`/
+  `ClusterListPanel`) now needs both `AuthProvider` and `GatedActionProvider` in its tree —
+  centralized in a new `src/test/renderWithProviders.tsx` helper rather than duplicated per file.
+- Google Sign-In (`GoogleSignInButton`/`useGoogleIdentityServices`) only loads the Google
+  Identity Services script and renders its button when `VITE_GOOGLE_CLIENT_ID` is configured —
+  mirroring `map`'s missing-Mapbox-token guard pattern — so dev/test/CI never depend on a real
+  Google client id or network access. This repo's `.env.example`/`.env` leave it blank by
+  default; the "unconfigured" test path needs no env stubbing since it matches that default
+  exactly.
+- `.btn`/`.btn--primary`/`.btn--secondary` were ported from `design-system/preview/styles.css`
+  into `src/styles/global.css` on this feature's first need for a generic CTA button — no prior
+  feature needed one (`EventCard`/`filters`/`search` all use their own bespoke controls).
+
 ## Notable fixes found only by testing across environments
 
 - `groupEventsByDate` originally derived an event's date via `new Date(iso).getFullYear()/

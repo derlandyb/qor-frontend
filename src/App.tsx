@@ -1,6 +1,9 @@
 import { Outlet, Route, Routes } from "react-router-dom";
 import { PlaceholderPage } from "./components/PlaceholderPage";
 import { Layout } from "./components/nav/Layout";
+import { AuthProvider } from "./auth/AuthContext";
+import { GatedActionProvider } from "./auth/GatedActionProvider";
+import { ResetPasswordPage } from "./auth/ResetPasswordPage";
 import { EventDetailPage } from "./features/detail/EventDetailPage";
 import { EventFeedPage } from "./features/feed/EventFeedPage";
 import { FilterProvider } from "./features/filters/FilterProvider";
@@ -19,18 +22,23 @@ function FeedAndMapLayout() {
 
 function App() {
   return (
-    <Layout>
-      <Routes>
-        <Route element={<FeedAndMapLayout />}>
-          <Route path="/" element={<EventFeedPage />} />
-          <Route path="/mapa" element={<MapPage />} />
-        </Route>
-        <Route path="/explorar" element={<PlaceholderPage title="Explorar" />} />
-        <Route path="/favoritos" element={<PlaceholderPage title="Favoritos" />} />
-        <Route path="/perfil" element={<PlaceholderPage title="Perfil" />} />
-        <Route path="/eventos/:id" element={<EventDetailPage />} />
-      </Routes>
-    </Layout>
+    <AuthProvider>
+      <GatedActionProvider>
+        <Layout>
+          <Routes>
+            <Route element={<FeedAndMapLayout />}>
+              <Route path="/" element={<EventFeedPage />} />
+              <Route path="/mapa" element={<MapPage />} />
+            </Route>
+            <Route path="/explorar" element={<PlaceholderPage title="Explorar" />} />
+            <Route path="/favoritos" element={<PlaceholderPage title="Favoritos" />} />
+            <Route path="/perfil" element={<PlaceholderPage title="Perfil" />} />
+            <Route path="/eventos/:id" element={<EventDetailPage />} />
+            <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
+          </Routes>
+        </Layout>
+      </GatedActionProvider>
+    </AuthProvider>
   );
 }
 

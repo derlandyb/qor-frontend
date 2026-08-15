@@ -1,0 +1,117 @@
+/* AuthOverlay (portal-rendered modal) + the standalone ResetPasswordPage, which reuses the
+ * same dialog chrome as a static (non-portal, non-backdrop) card. */
+
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(23, 27, 43, 0.6);
+  padding: var(--space-margin-mobile);
+}
+
+.auth-overlay__dialog {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--color-surface-container-lowest);
+  border-radius: var(--radius-lg);
+  padding: var(--space-stack-lg);
+  box-shadow: var(--elevation-level2);
+}
+
+.auth-page {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-stack-lg) var(--space-margin-mobile);
+}
+
+.auth-overlay__dialog--static {
+  box-shadow: none;
+  border: 1px solid var(--color-outline-variant);
+}
+
+.auth-overlay__close {
+  position: absolute;
+  top: var(--space-stack-sm);
+  right: var(--space-stack-sm);
+  border: none;
+  background: none;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.auth-overlay__title {
+  margin-top: 0;
+}
+
+.auth-overlay__error {
+  background: var(--color-error-container);
+  color: var(--color-on-error-container);
+  border-radius: var(--radius-md);
+  padding: var(--space-stack-sm);
+  font-size: var(--font-body-md-size);
+  margin: 0 0 var(--space-stack-md);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+}
+
+.auth-form__label {
+  font-size: var(--font-label-md-size);
+  font-weight: var(--font-label-md-weight);
+  color: var(--color-on-surface-variant);
+}
+
+.auth-form__input {
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-md);
+  padding: var(--space-btn-y) var(--space-stack-sm);
+  font-size: var(--font-body-md-size);
+  color: var(--color-on-surface);
+  background: var(--color-surface);
+}
+
+.auth-form .btn {
+  margin-top: var(--space-stack-sm);
+}
+
+.auth-overlay__links {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-stack-sm);
+  margin-top: var(--space-stack-sm);
+}
+
+.auth-overlay__link {
+  border: none;
+  background: none;
+  color: var(--color-primary);
+  font-size: var(--font-body-md-size);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.auth-overlay__confirmation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-md);
+  align-items: flex-start;
+}
+
+.auth-form__google {
+  margin-top: var(--space-stack-sm);
+  display: flex;
+  justify-content: center;
+}

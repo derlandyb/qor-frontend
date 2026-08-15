@@ -156,19 +156,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const resetPassword = useCallback(
-    async (resetToken: string, email: string, password: string) => {
-      try {
-        await apiResetPassword(resetToken, email, password);
-      } catch (error) {
-        if (error instanceof ApiError && error.status === 422) {
-          throw new Error("Link expirado, solicite um novo.");
-        }
-        throw new Error(NETWORK_ERROR_MESSAGE);
+  const resetPassword = useCallback(async (resetToken: string, email: string, password: string) => {
+    try {
+      await apiResetPassword(resetToken, email, password);
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 422) {
+        throw new Error("Link expirado, solicite um novo.");
       }
-    },
-    [],
-  );
+      throw new Error(NETWORK_ERROR_MESSAGE);
+    }
+  }, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({
@@ -183,7 +180,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       requestPasswordReset,
       resetPassword,
     }),
-    [user, token, isLoading, register, login, loginWithGoogle, logout, requestPasswordReset, resetPassword],
+    [
+      user,
+      token,
+      isLoading,
+      register,
+      login,
+      loginWithGoogle,
+      logout,
+      requestPasswordReset,
+      resetPassword,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

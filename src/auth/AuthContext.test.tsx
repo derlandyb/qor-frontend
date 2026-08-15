@@ -12,7 +12,9 @@ function Probe() {
     <div>
       <span data-testid="status">{isLoading ? "loading" : isAuthenticated ? "in" : "out"}</span>
       <span data-testid="user">{user?.name ?? ""}</span>
-      <button onClick={() => login("ana@example.com", "senha123").catch(() => undefined)}>login</button>
+      <button onClick={() => login("ana@example.com", "senha123").catch(() => undefined)}>
+        login
+      </button>
       <button onClick={() => register("Ana", "ana@example.com", "senha123").catch(() => undefined)}>
         register
       </button>
@@ -31,7 +33,11 @@ describe("AuthContext", () => {
   it("given valid credentials when logging in then the user and token are stored", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(new Response(JSON.stringify({ user: USER, token: "tok" }), { status: 200 })),
+      vi
+        .fn()
+        .mockResolvedValue(
+          new Response(JSON.stringify({ user: USER, token: "tok" }), { status: 200 }),
+        ),
     );
 
     render(
@@ -49,9 +55,11 @@ describe("AuthContext", () => {
   });
 
   it("given a successful registration then the session is adopted without a second login call", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ user: USER, token: "tok" }), { status: 200 }),
-    );
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(
+        new Response(JSON.stringify({ user: USER, token: "tok" }), { status: 200 }),
+      );
     vi.stubGlobal("fetch", fetchMock);
 
     render(
@@ -71,7 +79,11 @@ describe("AuthContext", () => {
   it("given a Google id token when signing in then the session is adopted", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(new Response(JSON.stringify({ user: USER, token: "tok" }), { status: 200 })),
+      vi
+        .fn()
+        .mockResolvedValue(
+          new Response(JSON.stringify({ user: USER, token: "tok" }), { status: 200 }),
+        ),
     );
 
     render(
@@ -90,7 +102,11 @@ describe("AuthContext", () => {
   it("given wrong credentials when logging in then a generic error is thrown and no session is stored", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(new Response(JSON.stringify({ message: "Unauthorized" }), { status: 401 })),
+      vi
+        .fn()
+        .mockResolvedValue(
+          new Response(JSON.stringify({ message: "Unauthorized" }), { status: 401 }),
+        ),
     );
 
     render(
@@ -109,7 +125,10 @@ describe("AuthContext", () => {
 
   it("given a stored token on mount then the session resumes silently via GET /api/user", async () => {
     saveToken("tok");
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify(USER), { status: 200 })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response(JSON.stringify(USER), { status: 200 })),
+    );
 
     render(
       <AuthProvider>

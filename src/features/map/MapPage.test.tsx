@@ -3,6 +3,8 @@ import userEvent from "@testing-library/user-event";
 import mapboxgl from "mapbox-gl";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { AuthProvider } from "../../auth/AuthContext";
+import { GatedActionProvider } from "../../auth/GatedActionProvider";
 import { makeEvent, makeVenue } from "../../test/factories";
 import { FilterProvider } from "../filters/FilterProvider";
 import { CLUSTER_LAYER_ID, UNCLUSTERED_LAYER_ID } from "./mapLayers";
@@ -109,9 +111,13 @@ function latestMapInstance(): FakeMap {
 function renderMapPage() {
   return render(
     <MemoryRouter initialEntries={["/mapa"]}>
-      <FilterProvider>
-        <MapPage />
-      </FilterProvider>
+      <AuthProvider>
+        <GatedActionProvider>
+          <FilterProvider>
+            <MapPage />
+          </FilterProvider>
+        </GatedActionProvider>
+      </AuthProvider>
     </MemoryRouter>,
   );
 }
